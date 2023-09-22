@@ -111,7 +111,7 @@ require("languageserver")
 
 ## STEP 3. Load the downloaded sample datasets ----
 # Load the datasets
-iris_dataset <- read.csv("data/iris.data", header = FALSE,
+student_performance <- read.csv("data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset - dataset.csv", header = FALSE,
                          stringsAsFactors = TRUE)
 
 # The following code (optional) can be used to name the attributes in the
@@ -125,16 +125,25 @@ if (!is.element("readr", installed.packages()[, 1])) {
 }
 require("readr")
 
-crop_dataset <- read_csv(
-  "data/crop.data.csv",
+student_performance <- read_csv(
+  "data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset - dataset.csv",
   col_types = cols(
-    density = col_factor(levels = c("1", "2")),
-    block = col_factor(levels = c("1", "2", "3", "4")),
-    fertilizer = col_factor(levels = c("1", "2", "3")),
-    yield = col_double()
+    gender = col_factor(levels = c("1", "0")),
+    regret_choosing_bi = col_factor(levels = c("1", "0")),
+    motivator = col_factor(levels = c("1", "0")),
+    paid_tuition = col_factor(levels = c("1", "0")),
+    extra_curricular = col_factor(levels = c("1", "0")),
+    read_content_before_lecture = col_factor(levels = c("1", "2", "3", "4", "5")),
+    anticipate_test_questions = col_factor(levels = c("1", "2", "3", "4", "5")),
+    health = col_factor(levels = c("1", "2", "3", "4", "5")),
+    GRADE = col_factor(levels = c("A", "B", "C", "D", "E"))
   )
 )
-View(crop_dataset)
+library(vroom)
+dat <- vroom("data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset - dataset.csv", delim = ",")
+problems(dat)
+
+View(student_performance)
 
 ## STEP 4. Load sample datasets that are provided as part of a package ----
 if (!is.element("mlbench", installed.packages()[, 1])) {
@@ -142,8 +151,8 @@ if (!is.element("mlbench", installed.packages()[, 1])) {
 }
 require("mlbench")
 
-data("PimaIndiansDiabetes")
-data("BostonHousing")
+data("student_performance")
+#data("BostonHousing")
 
 # Dimensions ----
 ## STEP 5. Preview the Loaded Datasets ----
@@ -151,10 +160,10 @@ data("BostonHousing")
 # attributes/variables/features (columns). Execute the following commands to
 # display the dimensions of your datasets:
 
-dim(BostonHousing)
-dim(crop_dataset)
-dim(iris_dataset)
-dim(PimaIndiansDiabetes)
+dim(student_performance)
+#dim(crop_dataset)
+#dim(iris_dataset)
+#dim(PimaIndiansDiabetes)
 
 # Data Types ----
 ## STEP 6. Identify the Data Types ----
@@ -163,10 +172,10 @@ dim(PimaIndiansDiabetes)
 # to identify the need to convert from categorical data (factors) to integers
 # or vice versa where necessary. Execute the following command to identify the
 # data types:
-sapply(BostonHousing, class)
-sapply(crop_dataset, class)
-sapply(iris_dataset, class)
-sapply(PimaIndiansDiabetes, class)
+sapply(student_performance, class)
+#sapply(crop_dataset, class)
+#sapply(iris_dataset, class)
+#sapply(PimaIndiansDiabetes, class)
 
 # Descriptive Statistics ----
 
@@ -212,63 +221,60 @@ sapply(PimaIndiansDiabetes, class)
 # It is more sensible to count categorical variables (factors or dimensions)
 # than numeric variables, e.g., counting the number of male and female
 # participants instead of counting the frequency of each participant’s height.
-boston_housing_freq <- BostonHousing$chas
-cbind(frequency = table(boston_housing_freq),
-      percentage = prop.table(table(boston_housing_freq)) * 100)
+student_performance_freq <- student_performance$gender
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
 
-crop_dataset_density_freq <- crop_dataset$density
-cbind(frequency = table(crop_dataset_density_freq),
-      percentage = prop.table(table(crop_dataset_density_freq)) * 100)
+student_performance_freq <- student_performance$regret_choosing_bi
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
 
-crop_dataset_block_freq <- crop_dataset$block
-cbind(frequency = table(crop_dataset_block_freq),
-      percentage = prop.table(table(crop_dataset_block_freq)) * 100)
+student_performance_freq <- student_performance$motivator
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
 
-crop_dataset_fertilizer_freq <- crop_dataset$fertilizer
-cbind(frequency = table(crop_dataset_fertilizer_freq),
-      percentage = prop.table(table(crop_dataset_fertilizer_freq)) * 100)
+student_performance_freq <- student_performance$paid_tuition
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
 
-iris_dataset_freq <- iris_dataset$V5
-cbind(frequency = table(iris_dataset_freq),
-      percentage = prop.table(table(iris_dataset_freq)) * 100)
+student_performance_freq <- student_performance$extra_curricular
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
 
-pima_indians_diabetes_freq <- PimaIndiansDiabetes$diabetes
-cbind(frequency = table(pima_indians_diabetes_freq),
-      percentage = prop.table(table(pima_indians_diabetes_freq)) * 100)
+student_performance_freq <- student_performance$read_content_before_lecture
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
+
+student_performance_freq <- student_performance$anticipate_test_questions
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
+
+student_performance_freq <- student_performance$health
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
+
+student_performance_freq <- student_performance$GRADE
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
+
 
 ## Measures of Central Tendency ----
 ### STEP 8. Calculate the mode ----
 # Unfortunately, R does not have an in-built function for calculating the mode.
 # We, therefore, must manually create a function that can calculate the mode.
 
-boston_housing_chas_mode <- names(table(BostonHousing$chas))[
-  which(table(BostonHousing$chas) == max(table(BostonHousing$chas)))
+student_performance_gender_mode <- names(table(student_performance$gender))[
+  which(table(student_performance$gender) == max(table(student_performance$gender)))
 ]
-print(boston_housing_chas_mode)
-
-crop_dataset_fertilizer_mode <- names(table(crop_dataset$fertilizer))[
-  which(table(crop_dataset$fertilizer) == max(table(crop_dataset$fertilizer)))
-]
-print(crop_dataset_fertilizer_mode)
-
-iris_dataset_mode <- names(table(iris_dataset$V5))[
-  which(table(iris_dataset$V5) == max(table(iris_dataset$V5)))
-]
-print(iris_dataset_mode)
-
-pima_indians_diabetes_mode <- names(table(PimaIndiansDiabetes$diabetes))[
-  which(table(PimaIndiansDiabetes$diabetes) ==
-          max(table(PimaIndiansDiabetes$diabetes)))
-]
-print(pima_indians_diabetes_mode)
+print(student_performance_gender_mode)
 
 ## Measures of Distribution/Dispersion/Spread/Scatter/Variability ----
 
 ### STEP 9. Measure the distribution of the data for each variable ----
-summary(BostonHousing)
-summary(crop_dataset)
-summary(iris_dataset)
-summary(PimaIndiansDiabetes)
+summary(student_performance)
+#summary(crop_dataset)
+#summary(iris_dataset)
+#summary(PimaIndiansDiabetes)
 
 ### STEP 10. Measure the standard deviation of each variable ----
 # Measuring the variability in the dataset is important because the amount of
@@ -289,20 +295,21 @@ summary(PimaIndiansDiabetes)
 # leaving out the columns termed as “factors” (categorical) or those that have
 # a string data type.
 
-sapply(BostonHousing[, -4], sd)
-sapply(BostonHousing[, c(1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)], sd)
+numeric_columns <- student_performance [, sapply(student_performance, is.numeric)]
+
 
 # The data type of "yield" should be double (not numeric) so that it can be
 # calculated.
-sapply(crop_dataset[, 4], sd)
-sapply(iris_dataset[, 1:4], sd)
-sapply(PimaIndiansDiabetes[, 1:8], sd)
+standard_deviation <- sapply(numeric_columns, sd)
+
+print(standard_deviation)
 
 ### STEP 11. Measure the variance of each variable ----
-sapply(BostonHousing[, -4], var)
-sapply(crop_dataset[, 4], var)
-sapply(iris_dataset[, 1:4], var)
-sapply(PimaIndiansDiabetes[, 1:8], var)
+numeric_columns <- student_performance [, sapply(student_performance, is.numeric)]
+
+variance <- sapply(numeric_columns, sd)
+
+print(variance)
 
 ### STEP 12. Measure the kurtosis of each variable ----
 # The Kurtosis informs you of how often outliers occur in the results.
@@ -322,10 +329,8 @@ if (!is.element("e1071", installed.packages()[, 1])) {
 }
 require("e1071")
 
-sapply(BostonHousing[, -4],  kurtosis, type = 2)
-sapply(crop_dataset[, 4],  kurtosis, type = 2)
-sapply(iris_dataset[, 1:4],  kurtosis, type = 2)
-sapply(PimaIndiansDiabetes[, 1:8],  kurtosis, type = 2)
+numeric_columns <- student_performance[, sapply(student_performance, is.numeric)]
+kurtosis_values <- sapply(numeric_columns, kurtosis, type = 2)
 
 ### STEP 13. Measure the skewness of each variable ----
 
@@ -339,10 +344,8 @@ sapply(PimaIndiansDiabetes[, 1:8],  kurtosis, type = 2)
 # 2.	Skewness above 0.4 implies a positive skew; a right-skewed distribution.
 # 3.	Skewness below -0.4 implies a negative skew; a left-skewed distribution.
 
-sapply(BostonHousing[, -4],  skewness, type = 2)
-sapply(crop_dataset[, 4],  skewness, type = 2)
-sapply(iris_dataset[, 1:4],  skewness, type = 2)
-sapply(PimaIndiansDiabetes[, 1:8],  skewness, type = 2)
+numeric_columns <- student_performance[, sapply(student_performance, is.numeric)]
+skewness_values <- sapply(numeric_columns, skewness, type = 2)
 
 # Note, executing:
 # skewness(BostonHousing$crim, type=2) # nolint
@@ -357,30 +360,19 @@ sapply(PimaIndiansDiabetes[, 1:8],  skewness, type = 2)
 ## STEP 14. Measure the covariance between variables ----
 # Note that the covariance and the correlation are computed for numeric values
 # only, not categorical values.
-boston_housing_cov <- cov(BostonHousing[, -4])
-View(boston_housing_cov)
 
-crop_dataset_cov <- cov(crop_dataset[, 4])
-View(crop_dataset_cov)
 
-iris_dataset_cov <- cov(iris_dataset[, 1:4])
-View(iris_dataset_cov)
+student_performance_cov <- cov(student_performance[, sapply(student_performance, is.numeric)])
+View(student_performance_cov)
 
-pima_indians_diabetes_cov <- cov(PimaIndiansDiabetes[, 1:8])
-View(pima_indians_diabetes_cov)
 
 ## STEP 15. Measure the correlation between variables ----
-boston_housing_cor <- cor(BostonHousing[, -4])
-View(boston_housing_cor)
 
-crop_dataset_cor <- cor(crop_dataset[, 4])
-View(crop_dataset_cor)
+student_performance_cor <- cor(student_performance[, sapply(student_performance, is.numeric)])
+View(student_performance_cor)
 
-iris_dataset_cor <- cor(iris_dataset[, 1:4])
-View(iris_dataset_cor)
 
-pima_indians_diabetes_cor <- cor(PimaIndiansDiabetes[, 1:8])
-View(pima_indians_diabetes_cor)
+
 
 # Inferential Statistics ----
 # Read the following article:
@@ -459,8 +451,16 @@ View(pima_indians_diabetes_cor)
 # crop yield whereas,
 # Two-Way ANOVA can be used to test the effect of the 3 types of fertilizer and
 # the 2 types of planting density on crop yield.
-crop_dataset_one_way_anova <- aov(yield ~ fertilizer, data = crop_dataset)
-summary(crop_dataset_one_way_anova)
+#student_performance_one_way_anova <- aov(regret_choosing_bi ~ paid_tuition, data = student_performance)
+#summary(student_performance_one_way_anova)
+
+logistic_model <- glm(regret_choosing_bi ~ paid_tuition, data = student_performance, family = "binomial")
+summary(logistic_model)
+
+student_performance$regret_choosing_bi <- as.numeric(student_performance$regret_choosing_bi)  # Convert to numeric
+student_performance_one_way_anova <- aov(regret_choosing_bi ~ paid_tuition, data = student_performance)
+summary(student_performance_one_way_anova)
+
 
 # This shows the result of each variable and the residual. The residual refers
 # to all the variation that is not explained by the independent variable. The
