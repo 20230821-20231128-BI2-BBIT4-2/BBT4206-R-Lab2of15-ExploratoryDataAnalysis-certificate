@@ -498,9 +498,9 @@ summary(student_performance_one_way_anova)
 # can then be used to confirm this. Execute the following for a two-way ANOVA
 # (two independent variables):
 
-crop_dataset_additive_two_way_anova <- aov(yield ~ fertilizer + density, # nolint
-                                           data = crop_dataset)
-summary(crop_dataset_additive_two_way_anova)
+student_performance_two_way_anova <- aov(regret_choosing_bi ~ paid_tuition + read_content_before_lecture, # nolint
+                                           data = student_performance)
+summary(student_performance_two_way_anova)
 
 # Specifying an asterisk (*) instead of a plus (+) between the two independent
 # variables (fertilizer * density) implies that they have an interaction effect
@@ -514,9 +514,9 @@ summary(crop_dataset_additive_two_way_anova)
 # Execute the following to perform a two-way ANOVA with the assumption that
 # fertilizer and density have an interaction effect:
 
-crop_dataset_interactive_two_way_anova <- aov(yield ~ fertilizer * density, # nolint
-                                              data = crop_dataset)
-summary(crop_dataset_interactive_two_way_anova)
+student_performance_two_way_anova <- aov(regret_choosing_bi ~ paid_tuition * read_content_before_lecture, # nolint
+                                              data = student_performance)
+summary(student_performance_two_way_anova)
 
 # This can be interpreted as follows:
 # The additive two-way ANOVA shows that the crop yield is affected by both the
@@ -537,11 +537,11 @@ summary(crop_dataset_interactive_two_way_anova)
 # and not other variables that are not part of the research.
 
 # Execute the following to add the “block” variable:
-crop_dataset_interactive_two_way_anova_with_block <- aov(yield ~ # nolint
-                                                           fertilizer + density
-                                                           + block,
-                                                         data = crop_dataset)
-summary(crop_dataset_interactive_two_way_anova_with_block)
+student_performance_interactive_two_way_anova_with_block <- aov(regret_choosing_bi ~ # nolint
+                                                           paid_tuition + read_content_before_lecture
+                                                           + anticipate_test_questions ,
+                                                         data = student_performance)
+summary(student_performance_interactive_two_way_anova_with_block)
 
 # This can be interpreted as follows:
 # The additive two-way ANOVA shows that the crop yield is affected by both the
@@ -613,14 +613,14 @@ hist(BostonHousing[, 14], main = names(BostonHousing)[14])
 # The code below converts column number 4 into unlisted and numeric data first
 # so that a histogram can be plotted. Further reading:
 # https://www.programmingr.com/r-error-messages/x-must-be-numeric-error-in-r-histogram/ ) # nolint
-crop_dataset_yield <- as.numeric(unlist(crop_dataset[, 4]))
-hist(crop_dataset_yield, main = names(crop_dataset)[4])
+student_performance <- as.numeric(unlist(student_performance))
+hist(student_performance, main = names(student_performance))
 
 # Execute the following code to create histograms for attribute 1 to 4 of the
 # “iris_dataset” dataset:
-par(mfrow = c(1, 4))
-for (i in 1:4) {
-  hist(iris_dataset[, i], main = names(iris_dataset)[i])
+par(mfrow = c(1, 7))
+for (i in 1:7) {
+  hist(student_performance[, i], main = names(student_performance)[i])
 }
 
 # Execute the following code to create histograms for the “PimaIndiansDiabetes”
@@ -664,22 +664,22 @@ boxplot(crop_dataset[, 4], main = names(crop_dataset)[4])
 # column number 4 into unlisted and numeric data first.
 # Further reading:
 # https://www.programmingr.com/r-error-messages/x-must-be-numeric-error-in-r-histogram/ # nolint
-crop_dataset_yield <- as.numeric(unlist(crop_dataset[, 4]))
-boxplot(crop_dataset_yield, main = names(crop_dataset)[4])
+student_performance <- as.numeric(unlist(student_performance))
+boxplot(student_performance, main = names(student_performance))
 
 # Execute the following code to create box and whisker plots for attribute
 # 1 to 4 of the “iris_dataset” dataset:
-par(mfrow = c(1, 4))
-for (i in 1:4) {
-  boxplot(iris_dataset[, i], main = names(iris_dataset)[i])
-}
+#par(mfrow = c(1, 4))
+#for (i in 1:4) {
+ # boxplot(iris_dataset[, i], main = names(iris_dataset)[i])
+#}
 
 # Execute the following code to create histograms for the “PimaIndiansDiabetes”
 # dataset:
-par(mfrow = c(1, 8))
-for (i in 1:8) {
-  boxplot(PimaIndiansDiabetes[, i], main = names(PimaIndiansDiabetes)[i])
-}
+#par(mfrow = c(1, 8))
+#for (i in 1:8) {
+ # boxplot(PimaIndiansDiabetes[, i], main = names(PimaIndiansDiabetes)[i])
+#}
 
 ### STEP 19. Create Bar Plots for Each Categorical Attribute ----
 # Categorical attributes (factors) can also be visualized. This is done using a
@@ -690,7 +690,7 @@ for (i in 1:8) {
 # (“chas” - Charles River dummy variable (= 1 if tract bounds river;
 # 0 otherwise)) in the “BostonHousing” dataset:
 
-barplot(table(BostonHousing[, 4]), main = names(BostonHousing)[4])
+barplot(table(student_performance), main = names(student_performance))
 
 # The features (attributes) in the “crop_dataset” dataset are:
 # 1.	density: planting density (1 = low density, 2 = high density)
@@ -701,10 +701,10 @@ barplot(table(BostonHousing[, 4]), main = names(BostonHousing)[4])
 # Execute the following to create a bar plot for the categorical attributes
 # 1 to 3 in the “crop_dataset” dataset:
 
-par(mfrow = c(1, 3))
-for (i in 1:3) {
-  barplot(table(crop_dataset[, i]), main = names(crop_dataset)[i])
-}
+#par(mfrow = c(1, 3))
+#for (i in 1:3) {
+ # barplot(table(crop_dataset[, i]), main = names(crop_dataset)[i])
+#}
 
 # The attributes in the “iris_dataset” dataset are:
 # 1.	sepal length in cm
@@ -746,18 +746,23 @@ if (!is.element("Amelia", installed.packages()[, 1])) {
 }
 require("Amelia")
 
-missmap(BostonHousing, col = c("red", "grey"), legend = TRUE)
-missmap(crop_dataset, col = c("red", "grey"), legend = TRUE)
-missmap(iris_dataset, col = c("red", "grey"), legend = TRUE)
-missmap(PimaIndiansDiabetes, col = c("red", "grey"), legend = TRUE)
+# Convert factor columns representing ordinal data to numeric
+ordinal_columns <- c("gender", "regret_choosing_bi", "motivator", "paid_tuition", "extra_curricular", "GRADE", "read_content_before_lecture", "anticipate_test_questions", "health")
+student_performance[, ordinal_columns] <- lapply(student_performance[, ordinal_columns], as.numeric)
+
+
+missmap(student_performance, col = c("red", "grey"), legend = TRUE)
+#missmap(crop_dataset, col = c("red", "grey"), legend = TRUE)
+#missmap(iris_dataset, col = c("red", "grey"), legend = TRUE)
+#missmap(PimaIndiansDiabetes, col = c("red", "grey"), legend = TRUE)
 
 # As shown in the results, the 4 datasets that were loaded in this lab have no
 # missing data. We can load a 5th dataset called “Soybean” found in the
 # “mlbench” package for an example of a dataset that has missing data. Execute
 # the following for an example of a dataset that has missing data:
-data(Soybean)
-View(Soybean)
-missmap(Soybean, col = c("red", "grey"), legend = TRUE)
+data(student_performance)
+View(student_performance)
+missmap(student_performance, col = c("red", "grey"), legend = TRUE)
 
 ## Multivariate Plots ----
 
@@ -774,9 +779,11 @@ if (!is.element("corrplot", installed.packages()[, 1])) {
   install.packages("corrplot", dependencies = TRUE)
 }
 require("corrplot")
-corrplot(cor(BostonHousing[, -4]), method = "circle")
-corrplot(cor(iris_dataset[, 1:4]), method = "circle")
-corrplot(cor(PimaIndiansDiabetes[, 1:8]), method = "circle")
+corrplot(cor(student_performance), method = "circle")
+
+
+#corrplot(cor(iris_dataset[, 1:4]), method = "circle")
+#corrplot(cor(PimaIndiansDiabetes[, 1:8]), method = "circle")
 
 # The reason why the “crop_dataset” dataset has no correlation plot is because
 # it does not have at least 2 numeric attributes to compare.
@@ -788,18 +795,20 @@ if (!is.element("ggcorrplot", installed.packages()[, 1])) {
   install.packages("ggcorrplot", dependencies = TRUE)
 }
 require("ggcorrplot")
-ggcorrplot(cor(BostonHousing[, -4]))
-ggcorrplot(cor(iris_dataset[, 1:4]))
-ggcorrplot(cor(PimaIndiansDiabetes[, 1:8]))
+ggcorrplot(cor(student_performance))
+#ggcorrplot(cor(iris_dataset[, 1:4]))
+#ggcorrplot(cor(PimaIndiansDiabetes[, 1:8]))
 
 ### STEP 22. Create a Scatter Plot ----
-pairs(BostonHousing)
-pairs(block ~ ., data = crop_dataset, col = crop_dataset$block)
-pairs(density ~ ., data = crop_dataset, col = crop_dataset$density)
+pairs(student_performance)  ~  + read_content_before_lecture
+pairs(regret_choosing_bi ~ ., data = student_performance, col = student_performance$regret_choosing_bi)
+pairs(paid_tuition ~ ., data = student_performance, col = student_performance$paid_tuition)
 pairs(fertilizer ~ ., data = crop_dataset, col = crop_dataset$fertilizer)
 pairs(V5 ~ ., data = iris_dataset, col = iris_dataset$V5)
 pairs(diabetes ~ ., data = PimaIndiansDiabetes,
       col = PimaIndiansDiabetes$diabetes)
+
+pairs(student_performance, col = c("regret_choosing_bi", "read_content_before_lecture", "paid_tuition"))
 
 # Alternatively, the ggcorrplot package can be used to make the plots more
 # appealing:
