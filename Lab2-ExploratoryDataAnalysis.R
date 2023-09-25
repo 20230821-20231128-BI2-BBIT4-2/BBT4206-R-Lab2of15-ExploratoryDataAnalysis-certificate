@@ -628,7 +628,7 @@ for (i in 1:7) {
 par(mfrow = c(1, ncol(student_performance)))
 
 # Loop through each numeric column and create a histogram
-for (i in 1:ncol(student_performance)) {
+for (i in 1:ncol(student_performance)) { # nolint
   if (is.numeric(student_performance[, i])) {
     hist(student_performance[, i], main = names(student_performance)[i])
   }
