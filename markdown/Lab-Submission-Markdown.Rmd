@@ -66,13 +66,15 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = TRUE,
 > editor_options:\
 > chunk_output_type: console
 
-# \<Provide an Appropriate Title Here\>
+# \<Loading the Dataset\>
 
 Describe the code chunk here:
 
 ```{r Your Second Code Chunk}
 # Fill this with R related code that will be executed when the R markdown file
 # is rendered using knitR
+student_performance <- read.csv("data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset - dataset.csv", header = FALSE,
+                         stringsAsFactors = TRUE)
 library(readr)
 ```
 
@@ -81,25 +83,232 @@ Describe the next code chunk here:
 ```{r Your Third Code Chunk}
 # Fill this with other R related code that will be executed when the R markdown
 # file is rendered using knitR
+if (!is.element("readr", installed.packages()[, 1])) {
+  install.packages("readr", dependencies = TRUE)
+}
+require("readr")
+
+student_performance <- read_csv(
+  "data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset - dataset.csv",
+  col_types = cols(
+    gender = col_factor(levels = c("1", "0")),
+    regret_choosing_bi = col_factor(levels = c("1", "0")),
+    motivator = col_factor(levels = c("1", "0")),
+    paid_tuition = col_factor(levels = c("1", "0")),
+    extra_curricular = col_factor(levels = c("1", "0")),
+    read_content_before_lecture = col_factor(levels = c("1", "2", "3", "4", "5")),
+    anticipate_test_questions = col_factor(levels = c("1", "2", "3", "4", "5")),
+    health = col_factor(levels = c("1", "2", "3", "4", "5")),
+    GRADE = col_factor(levels = c("A", "B", "C", "D", "E"))
+  )
+)
+library(vroom)
+dat <- vroom("data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset - dataset.csv", delim = ",")
+problems(dat)
+
+View(student_performance)
 library(readr)
 ```
 
-## \<You Can Have a Sub-Title Here\>
+## \<Preview loaded dataset\>
 
 ```{r Your Fourth Code Chunk}
 # Fill this with other R related code that will be executed when the R markdown
 # file is rendered using knitR
+dim(student_performance)
+sapply(student_performance, class)
 library(readr)
 ```
 
-# \<You can Provide Another Appropriate Title Here\>
+# \<Identify the number of instances that belong to each class\>
 
 Describe the code chunk here:
 
 ```{r Your Fifth Code Chunk}
-# Fill this with R related code that will be executed when the R markdown file
-# is rendered using knitR
+student_performance_freq <- student_performance$gender
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
+
+student_performance_freq <- student_performance$regret_choosing_bi
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
+
+student_performance_freq <- student_performance$motivator
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
+
+student_performance_freq <- student_performance$paid_tuition
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
+
+student_performance_freq <- student_performance$extra_curricular
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
+
+student_performance_freq <- student_performance$read_content_before_lecture
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
+
+student_performance_freq <- student_performance$anticipate_test_questions
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
+
+student_performance_freq <- student_performance$health
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
+
+student_performance_freq <- student_performance$GRADE
+cbind(frequency = table(student_performance_freq),
+      percentage = prop.table(table(student_performance_freq)) * 100)
 library(readr)
 ```
 
-**etc.** as per the lab submission requirements.
+## \<Calculate the mode\>
+
+```{r Your Fourth Code Chunk}
+student_performance_gender_mode <- names(table(student_performance$gender))[
+  which(table(student_performance$gender) == max(table(student_performance$gender)))
+]
+print(student_performance_gender_mode)
+library(readr)
+```
+
+
+## \<Measure the distribution of the data for each variable\>
+
+```{r Your Fourth Code Chunk}
+summary(student_performance)
+
+numeric_columns <- student_performance [, sapply(student_performance, is.numeric)]
+
+
+# The data type of "yield" should be double (not numeric) so that it can be
+# calculated.
+standard_deviation <- sapply(numeric_columns, sd)
+
+print(standard_deviation)
+
+library(readr)
+```
+
+
+## \<Measure the variance of each variable\>
+
+```{r Your Fourth Code Chunk}
+numeric_columns <- student_performance [, sapply(student_performance, is.numeric)]
+
+variance <- sapply(numeric_columns, sd)
+
+print(variance)
+
+library(readr)
+```
+
+
+## \<Measure the kurtosis of each variable\>
+
+```{r Your Fourth Code Chunk}
+if (!is.element("e1071", installed.packages()[, 1])) {
+  install.packages("e1071", dependencies = TRUE)
+}
+require("e1071")
+
+numeric_columns <- student_performance[, sapply(student_performance, is.numeric)]
+kurtosis_values <- sapply(numeric_columns, kurtosis, type = 2)
+library(readr)
+```
+
+
+## \<Measure the skewness of each variable\>
+
+```{r Your Fourth Code Chunk}
+numeric_columns <- student_performance[, sapply(student_performance, is.numeric)]
+skewness_values <- sapply(numeric_columns, skewness, type = 2)
+library(readr)
+```
+
+
+## \<Measure the covariance between variables\>
+
+```{r Your Fourth Code Chunk}
+student_performance_cov <- cov(student_performance[, sapply(student_performance, is.numeric)])
+View(student_performance_cov)
+library(readr)
+```
+
+
+## \<Measure the correlation between variables\>
+
+```{r Your Fourth Code Chunk}
+student_performance_cor <- cor(student_performance[, sapply(student_performance, is.numeric)])
+View(student_performance_cor)
+library(readr)
+```
+
+
+## \<Perform ANOVA on the “student_performance” dataset\>
+
+```{r Your Fourth Code Chunk}
+# Dependent variable:	GRADE
+# Independent variables:	gender, paid_tuition and regret_choosing_bi
+logistic_model <- glm(regret_choosing_bi ~ GRADE, data = student_performance, family = "binomial")
+summary(logistic_model)
+
+student_performance$regret_choosing_bi <- as.numeric(student_performance$regret_choosing_bi)  # Convert to numeric
+student_performance_one_way_anova <- aov(regret_choosing_bi ~ GRADE, data = student_performance)
+summary(student_performance_one_way_anova)
+library(readr)
+```
+
+
+## \<Create Histograms for Each Numeric Attribute\>
+
+```{r Your Fourth Code Chunk}
+student_performance <- as.numeric(unlist(student_performance))
+hist(student_performance, main = names(student_performance))
+
+#boxplotting graph code
+student_performance <- as.numeric(unlist(student_performance))
+boxplot(student_performance, main = names(student_performance))
+
+#barplotting graph code
+barplot(table(student_performance), main = names(student_performance))
+
+library(readr)
+```
+
+
+## \Missmaps for missing data\>
+
+```{r Your Fourth Code Chunk}
+# Execute the following to create a map to identify the missing data in each
+# dataset:
+if (!is.element("Amelia", installed.packages()[, 1])) {
+  install.packages("Amelia", dependencies = TRUE)
+}
+require("Amelia")
+missmap(student_performance, col = c("red", "grey"), legend = TRUE)
+library(readr)
+```
+
+
+## \<Create a Correlation Plot\>
+
+```{r Your Fourth Code Chunk}
+if (!is.element("corrplot", installed.packages()[, 1])) {
+  install.packages("corrplot", dependencies = TRUE)
+}
+require("corrplot")
+corrplot(cor(student_performance), method = "circle")
+library(readr)
+```
+
+
+## \<Scatter plot\>
+
+```{r Your Fourth Code Chunk}
+pairs(student_performance)  ~  + GRADE
+
+library(readr)
+```
+
