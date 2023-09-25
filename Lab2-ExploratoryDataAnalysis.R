@@ -151,7 +151,7 @@ if (!is.element("mlbench", installed.packages()[, 1])) {
 }
 require("mlbench")
 
-data("student_performance")
+#data("student_performance")
 #data("BostonHousing")
 
 # Dimensions ----
@@ -438,8 +438,8 @@ View(student_performance_cor)
 # an imaginary study of the effects of fertilizer type and planting density on
 # crop yield. In other words:
 
-# Dependent variable:	Crop yield
-# Independent variables:	Fertilizer type, planting density, and block
+# Dependent variable:	GRADE
+# Independent variables:	gender, paid_tuition and regret_choosing_bi
 
 # The features (attributes) are:
 # 1.	density: planting density (1 = low density, 2 = high density)
@@ -454,11 +454,11 @@ View(student_performance_cor)
 #student_performance_one_way_anova <- aov(regret_choosing_bi ~ paid_tuition, data = student_performance)
 #summary(student_performance_one_way_anova)
 
-logistic_model <- glm(regret_choosing_bi ~ paid_tuition, data = student_performance, family = "binomial")
+logistic_model <- glm(regret_choosing_bi ~ GRADE, data = student_performance, family = "binomial")
 summary(logistic_model)
 
 student_performance$regret_choosing_bi <- as.numeric(student_performance$regret_choosing_bi)  # Convert to numeric
-student_performance_one_way_anova <- aov(regret_choosing_bi ~ paid_tuition, data = student_performance)
+student_performance_one_way_anova <- aov(regret_choosing_bi ~ GRADE, data = student_performance)
 summary(student_performance_one_way_anova)
 
 
@@ -498,7 +498,7 @@ summary(student_performance_one_way_anova)
 # can then be used to confirm this. Execute the following for a two-way ANOVA
 # (two independent variables):
 
-student_performance_two_way_anova <- aov(regret_choosing_bi ~ paid_tuition + read_content_before_lecture, # nolint
+student_performance_two_way_anova <- aov(regret_choosing_bi ~ GRADE + read_content_before_lecture, # nolint
                                            data = student_performance)
 summary(student_performance_two_way_anova)
 
@@ -514,7 +514,7 @@ summary(student_performance_two_way_anova)
 # Execute the following to perform a two-way ANOVA with the assumption that
 # fertilizer and density have an interaction effect:
 
-student_performance_two_way_anova <- aov(regret_choosing_bi ~ paid_tuition * read_content_before_lecture, # nolint
+student_performance_two_way_anova <- aov(regret_choosing_bi ~ GRADE * read_content_before_lecture, # nolint
                                               data = student_performance)
 summary(student_performance_two_way_anova)
 
@@ -538,7 +538,7 @@ summary(student_performance_two_way_anova)
 
 # Execute the following to add the “block” variable:
 student_performance_interactive_two_way_anova_with_block <- aov(regret_choosing_bi ~ # nolint
-                                                           paid_tuition + read_content_before_lecture
+                                                           GRADE + read_content_before_lecture
                                                            + anticipate_test_questions ,
                                                          data = student_performance)
 summary(student_performance_interactive_two_way_anova_with_block)
@@ -621,6 +621,17 @@ hist(student_performance, main = names(student_performance))
 par(mfrow = c(1, 7))
 for (i in 1:7) {
   hist(student_performance[, i], main = names(student_performance)[i])
+}
+
+#sampled
+# Set the layout for the histograms
+par(mfrow = c(1, ncol(student_performance)))
+
+# Loop through each numeric column and create a histogram
+for (i in 1:ncol(student_performance)) {
+  if (is.numeric(student_performance[, i])) {
+    hist(student_performance[, i], main = names(student_performance)[i])
+  }
 }
 
 # Execute the following code to create histograms for the “PimaIndiansDiabetes”
@@ -745,13 +756,14 @@ if (!is.element("Amelia", installed.packages()[, 1])) {
   install.packages("Amelia", dependencies = TRUE)
 }
 require("Amelia")
+missmap(student_performance, col = c("red", "grey"), legend = TRUE)
 
 # Convert factor columns representing ordinal data to numeric
-ordinal_columns <- c("gender", "regret_choosing_bi", "motivator", "paid_tuition", "extra_curricular", "GRADE", "read_content_before_lecture", "anticipate_test_questions", "health")
-student_performance[, ordinal_columns] <- lapply(student_performance[, ordinal_columns], as.numeric)
+#ordinal_columns <- c("gender", "regret_choosing_bi", "motivator", "paid_tuition", "extra_curricular", "GRADE", "read_content_before_lecture", "anticipate_test_questions", "health")
+#student_performance[, ordinal_columns] <- lapply(student_performance[, ordinal_columns], as.numeric)
 
 
-missmap(student_performance, col = c("red", "grey"), legend = TRUE)
+#missmap(student_performance, col = c("red", "grey"), legend = TRUE)
 #missmap(crop_dataset, col = c("red", "grey"), legend = TRUE)
 #missmap(iris_dataset, col = c("red", "grey"), legend = TRUE)
 #missmap(PimaIndiansDiabetes, col = c("red", "grey"), legend = TRUE)
@@ -800,7 +812,7 @@ ggcorrplot(cor(student_performance))
 #ggcorrplot(cor(PimaIndiansDiabetes[, 1:8]))
 
 ### STEP 22. Create a Scatter Plot ----
-pairs(student_performance)  ~  + read_content_before_lecture
+pairs(student_performance)  ~  + GRADE
 pairs(regret_choosing_bi ~ ., data = student_performance, col = student_performance$regret_choosing_bi)
 pairs(paid_tuition ~ ., data = student_performance, col = student_performance$paid_tuition)
 pairs(fertilizer ~ ., data = crop_dataset, col = crop_dataset$fertilizer)
@@ -808,7 +820,7 @@ pairs(V5 ~ ., data = iris_dataset, col = iris_dataset$V5)
 pairs(diabetes ~ ., data = PimaIndiansDiabetes,
       col = PimaIndiansDiabetes$diabetes)
 
-pairs(student_performance, col = c("regret_choosing_bi", "read_content_before_lecture", "paid_tuition"))
+
 
 # Alternatively, the ggcorrplot package can be used to make the plots more
 # appealing:
